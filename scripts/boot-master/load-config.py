@@ -23,13 +23,13 @@ with open(ci, 'r') as stream:
 if len(sys.argv) > 1:
   if sys.argv[1] == "merge":
     with open(co, 'r') as stream:
-      try: 
+      try:
         config_o = yaml.load(stream)
       except yaml.YAMLError as exc:
         print(exc)
   else:
     config_o = {}
-    
+
 
 # First accept any changes from supplied config file
 config_o.update(config_f)
@@ -41,6 +41,20 @@ config_o.update(config_i)
 if not 'ansible_user' in config_o and getpass.getuser() != 'root':
   config_o['ansible_user'] = getpass.getuser()
   config_o['ansible_become'] = True
+
+# workaround for terraform not handling booleans
+if 'kibana_install' in config_o:
+  if config_o['kibana_install'].lower() in ("1", "true"):
+    config_o['kibana_install'] = True
+  else:
+    config_o['kibana_install'] = False
+
+if 'kibana' in config_o['logging']:
+  if 'install' in config_o['logging']['kibana']:
+    if config_o['logging']['kibana']['install'].lower() in ("1", "true"):
+      config_o['logging']['kibana']['install'] = True
+    else:
+      config_o['logging']['kibana']['install'] = False
 
 # Write the new configuration
 with open(co, 'w') as of:
