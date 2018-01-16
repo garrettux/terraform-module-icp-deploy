@@ -72,7 +72,7 @@ resource "null_resource" "icp-boot" {
   # If this is enterprise edition we'll need to copy the image file over and load it in local repository
   // We'll need to find another workaround while tf does not support count for this
   provisioner "file" {
-      source = "${var.image_file}"
+      source = "${var.enterprise-edition ? var.image_file : "/dev/null" }"
       destination = "/tmp/${basename(var.image_file)}"
   }
 

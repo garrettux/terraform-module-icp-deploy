@@ -1,26 +1,26 @@
 # Username and password for the initial admin user
-variable "icpuser" { 
+variable "icpuser" {
   type        = "string"
   description = "Username of initial admin user. Default: Admin"
-  default     = "admin" 
+  default     = "admin"
 }
-variable "icppassword" { 
+variable "icppassword" {
   type        = "string"
   description = "Password of initial admin user. Default: Admin"
-  default     = "admin" 
+  default     = "admin"
 }
 
-variable "icp-master" { 
+variable "icp-master" {
   type        = "list"
   description =  "IP address of ICP Masters. First master will also be boot master. CE edition only supports single master "
 }
 
-variable "icp-worker" { 
+variable "icp-worker" {
   type        = "list"
   description =  "IP addresses of ICP Worker nodes."
 }
 
-variable "icp-proxy" { 
+variable "icp-proxy" {
   type        = "list"
   description =  "IP addresses of ICP Proxy nodes."
 }
@@ -70,7 +70,7 @@ variable "cluster_size" {
 }
 
 /*
-  ICP Configuration 
+  ICP Configuration
   Configuration file is generated from items in the following order
   1. config.yaml shipped with ICP (if config_strategy = merge, else blank)
   2. config.yaml specified in icp_config_file
@@ -91,7 +91,7 @@ variable "icp_configuration" {
 variable "config_strategy" {
   description  = "Strategy for original config.yaml shipped with ICP. Default is merge, everything else means override"
   default      = "merge"
-  
+
 }
 
 
