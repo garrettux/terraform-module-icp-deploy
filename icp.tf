@@ -43,6 +43,19 @@ resource "null_resource" "icp-cluster" {
     destination = "/tmp/icp-common-scripts"
   }
 
+  # If this is enterprise edition we'll need to copy the image file over and load it in local repository
+  // We'll need to find another workaround while tf does not support count for this
+  provisioner "file" {
+      source = "${var.enterprise-edition ? var.image_file : "/dev/null" }"
+      destination = "/tmp/${basename(var.image_file)}"
+  }
+
+  provisioner "file" {
+    count = "${var.enterprise-edition ? 1 : 0 }"
+    source      = "${path.module}/scripts/boot-master/load-image.sh"
+    destination = "/tmp/icp-common-scripts/load-image.sh"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "mkdir -p ~/.ssh",
@@ -51,6 +64,13 @@ resource "null_resource" "icp-cluster" {
       "/tmp/icp-common-scripts/prereqs.sh",
       "/tmp/icp-common-scripts/version-specific.sh ${var.icp-version}",
       "/tmp/icp-common-scripts/docker-user.sh"
+    ]
+  }
+
+  provisioner "remote-exec" {
+    count = "${var.enterprise-edition ? 1 : 0 }"
+    inline = [
+      "/tmp/icp-bootmaster-scripts/load-image.sh ${var.icp-version} /tmp/${basename(var.image_file)}"
     ]
   }
 }
@@ -68,20 +88,12 @@ resource "null_resource" "icp-boot" {
     private_key = "${file(var.ssh_key)}"
   }
 
-
-  # If this is enterprise edition we'll need to copy the image file over and load it in local repository
-  // We'll need to find another workaround while tf does not support count for this
-  provisioner "file" {
-      source = "${var.enterprise-edition ? var.image_file : "/dev/null" }"
-      destination = "/tmp/${basename(var.image_file)}"
-  }
-
-
   provisioner "remote-exec" {
     inline = [
       "mkdir -p /tmp/icp-bootmaster-scripts"
     ]
   }
+
   provisioner "file" {
     source      = "${path.module}/scripts/boot-master/"
     destination = "/tmp/icp-bootmaster-scripts"
