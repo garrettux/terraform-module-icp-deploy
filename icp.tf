@@ -71,7 +71,7 @@ resource "null_resource" "icp-cluster" {
   provisioner "remote-exec" {
     #count = "${var.enterprise-edition ? 1 : 0 }"
     inline = [
-      "/tmp/icp-bootmaster-scripts/load-image.sh ${var.icp-version} /tmp/${basename(var.image_file)}"
+      "/tmp/icp-common-scripts/load-image.sh ${var.icp-version} /tmp/${basename(var.image_file)}"
     ]
   }
 }
