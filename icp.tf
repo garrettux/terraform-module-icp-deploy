@@ -43,6 +43,17 @@ resource "null_resource" "icp-cluster" {
     destination = "/tmp/icp-common-scripts"
   }
 
+  provisioner "remote-exec" {
+    inline = [
+      "mkdir -p /tmp/icp-bootmaster-scripts"
+    ]
+  }
+
+  provisioner "file" {
+    source      = "${path.module}/scripts/boot-master/"
+    destination = "/tmp/icp-bootmaster-scripts"
+  }
+
   # If this is enterprise edition we'll need to copy the image file over and load it in local repository
   // We'll need to find another workaround while tf does not support count for this
   #provisioner "file" {
@@ -50,12 +61,6 @@ resource "null_resource" "icp-cluster" {
       #source = "${var.enterprise-edition ? var.image_file : "/dev/null" }"
       #destination = "${dirname(var.image_path)}/${basename(var.image_file)}"
   #}
-
-  provisioner "file" {
-    #count = "${var.enterprise-edition ? 1 : 0 }"
-    source      = "${path.module}/scripts/boot-master/load-image.sh"
-    destination = "/tmp/icp-common-scripts/load-image.sh"
-  }
 
   provisioner "remote-exec" {
     inline = [
@@ -72,7 +77,7 @@ resource "null_resource" "icp-cluster" {
     #count = "${var.enterprise-edition ? 1 : 0 }"
     inline = [
       "/tmp/icp-common-scripts/s3fs-cos.sh ${var.cos_bucket} ${var.image_path} ${var.cos_endpoint} ${var.cos_key} ${var.cos_secret}",
-      "/tmp/icp-common-scripts/load-image.sh ${var.icp-version} ${dirname(var.image_path)}/${basename(var.image_file)}"
+      "/tmp/icp-bootmaster-scripts/load-image.sh ${var.icp-version} ${dirname(var.image_path)}/${basename(var.image_file)}"
     ]
   }
 }
