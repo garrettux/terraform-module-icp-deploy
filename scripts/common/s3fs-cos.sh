@@ -10,8 +10,8 @@ COS_SECRET=$5
 
 install() {
   cd /tmp
-  apt-get -y update
-  apt-get -y install automake autotools-dev g++ git libcurl4-openssl-dev libfuse-dev libssl-dev libxml2-dev make pkg-config
+  apt-get -y -q update
+  apt-get -y -q install automake autotools-dev g++ git libcurl4-openssl-dev libfuse-dev libssl-dev libxml2-dev make pkg-config
   git clone https://github.com/s3fs-fuse/s3fs-fuse.git
   cd s3fs-fuse
   ./autogen.sh && ./configure
