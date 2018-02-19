@@ -67,6 +67,7 @@ resource "null_resource" "icp-cluster" {
       "mkdir -p ~/.ssh",
       "cat /tmp/icpkey >> ~/.ssh/authorized_keys",
       "chmod a+x /tmp/icp-common-scripts/*",
+      "chmod a+x /tmp/icp-bootmaster-scripts/*.sh",
       "/tmp/icp-common-scripts/prereqs.sh",
       "/tmp/icp-common-scripts/version-specific.sh ${var.icp-version}",
       "/tmp/icp-common-scripts/docker-user.sh"
