@@ -20,6 +20,7 @@ install() {
 }
 
 mount() {
+  mkdir -p $COS_MOUNT
   s3fs $COS_BUCKET $COS_MOUNT -o passwd_file=$COS_CREDS -o sigv2 -o use_path_request_style -o url=$COS_ENDPOINT
 }
 
