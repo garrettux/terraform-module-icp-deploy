@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 COS_BUCKET=$1
 COS_MOUNT=$2
