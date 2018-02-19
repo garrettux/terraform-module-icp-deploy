@@ -30,6 +30,11 @@ variable "enterprise-edition" {
   default     = false
 }
 
+variable "image_path" {
+  description = "Directory of image. Only required for enterprise edition"
+  default     = "/tmp"
+}
+
 variable "image_file" {
   description = "Filename of image. Only required for enterprise edition"
   default     = "/dev/null"
@@ -94,6 +99,13 @@ variable "config_strategy" {
 
 }
 
+//${var.cos_bucket} ${var.image_path} ${var.cos_endpoint} ${var.cos_key} ${var.cos_secret}
+variable "cos_bucket" {}
+variable "cos_endpoint" {
+  default = "s3-api.us-geo.objectstorage.softlayer.net"
+}
+variable "cos_key" {}
+variable "cos_secret" {}
 
 locals {
   icp-ips     = "${concat(var.icp-master, var.icp-proxy, var.icp-worker)}"
