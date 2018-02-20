@@ -59,7 +59,7 @@ resource "null_resource" "icp-cluster" {
   #provisioner "file" {
       #count = "${var.enterprise-edition ? 1 : 0 }"
       #source = "${var.enterprise-edition ? var.image_file : "/dev/null" }"
-      #destination = "${dirname(var.image_path)}/${basename(var.image_file)}"
+      #destination = "${var.image_path}/${basename(var.image_file)}"
   #}
 
   provisioner "remote-exec" {
@@ -78,7 +78,7 @@ resource "null_resource" "icp-cluster" {
     #count = "${var.enterprise-edition ? 1 : 0 }"
     inline = [
       "/tmp/icp-common-scripts/s3fs-cos.sh ${var.cos_bucket} ${var.image_path} ${var.cos_endpoint} ${var.cos_key} ${var.cos_secret}",
-      "/tmp/icp-bootmaster-scripts/load-image.sh ${var.icp-version} ${dirname(var.image_path)}/${basename(var.image_file)}"
+      "/tmp/icp-bootmaster-scripts/load-image.sh ${var.icp-version} ${var.image_path}/${basename(var.image_file)}"
     ]
   }
 }
@@ -122,7 +122,7 @@ resource "null_resource" "icp-boot" {
   provisioner "remote-exec" {
     inline = [
       "chmod a+x /tmp/icp-bootmaster-scripts/*.sh",
-      "/tmp/icp-bootmaster-scripts/load-image.sh ${var.icp-version} ${dirname(var.image_path)}/${basename(var.image_file)}",
+      "/tmp/icp-bootmaster-scripts/load-image.sh ${var.icp-version} ${var.image_path}/${basename(var.image_file)}",
       "sudo mkdir -p /opt/ibm/cluster",
       "sudo chown ${var.ssh_user} /opt/ibm/cluster",
       "/tmp/icp-bootmaster-scripts/copy_cluster_skel.sh ${var.icp-version}",
