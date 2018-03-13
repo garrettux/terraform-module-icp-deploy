@@ -75,3 +75,8 @@ for proxy in "${proxy_ips[@]}"; do
   echo $proxy >> ${ICPDIR}/hosts
 done
 
+# hack, just want to test va
+echo '[va]' >> ${ICPDIR}/hosts
+for master in "${master_ips[@]}"; do
+  echo $master >> ${ICPDIR}/hosts
+done
