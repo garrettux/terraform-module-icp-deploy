@@ -25,6 +25,11 @@ variable "icp-proxy" {
   description =  "IP addresses of ICP Proxy nodes."
 }
 
+variable "icp-va" {
+  type        = "list"
+  description =  "IP addresses of ICP Vulnerability Advisor nodes."
+}
+
 variable "enterprise-edition" {
   description = "Whether to provision enterprise edition (EE) or community edition (CE). EE requires image files to be provided"
   default     = false

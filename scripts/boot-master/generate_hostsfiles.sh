@@ -15,6 +15,9 @@ IFS=', ' read -r -a worker_ips <<< $(cat ${WORKDIR}/workerlist.txt)
 declare -a proxy_ips
 IFS=', ' read -r -a proxy_ips <<< $(cat ${WORKDIR}/proxylist.txt)
 
+declare -a va_ips
+IFS=', ' read -r -a va_ips <<< $(cat ${WORKDIR}/valist.txt)
+
 ## First gather all the hostnames and link them with ip addresses
 declare -A cluster
 
@@ -30,6 +33,13 @@ for proxy in "${proxy_ips[@]}"; do
   proxies[$proxy]=$(ssh -o StrictHostKeyChecking=no -i ${WORKDIR}/ssh_key ${proxy} hostname)
   cluster[$proxy]=${proxies[$proxy]}
   printf "%s     %s\n" "$proxy" "${cluster[$proxy]}" >> /tmp/hosts
+done
+
+declare -A vas
+for va in "${va_ips[@]}"; do
+  vas[$va]=$(ssh -o StrictHostKeyChecking=no -i ${WORKDIR}/ssh_key ${va} hostname)
+  cluster[$va]=${vas[$va]}
+  printf "%s     %s\n" "$va" "${cluster[$va]}" >> /tmp/hosts
 done
 
 declare -A masters
@@ -75,8 +85,7 @@ for proxy in "${proxy_ips[@]}"; do
   echo $proxy >> ${ICPDIR}/hosts
 done
 
-# hack, just want to test va
 echo '[va]' >> ${ICPDIR}/hosts
-for master in "${master_ips[@]}"; do
-  echo $master >> ${ICPDIR}/hosts
+for va in "${va_ips[@]}"; do
+  echo $va >> ${ICPDIR}/hosts
 done
