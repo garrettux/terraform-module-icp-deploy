@@ -42,20 +42,20 @@ if not 'ansible_user' in config_o and getpass.getuser() != 'root':
   config_o['ansible_user'] = getpass.getuser()
   config_o['ansible_become'] = True
 
-# workaround for terraform not handling booleans
-if 'kibana_install' in config_o:
-  if config_o['kibana_install'].lower() in ("1", "true"):
-    config_o['kibana_install'] = True
-  else:
-    config_o['kibana_install'] = False
+# to handle terraform bug regarding booleans, find strings "true" or "false"
+# and convert them to booleans
+new_config = {}
+for key, value in config_o.iteritems():
+  if type(value) is str or type(value) is unicode:
+    if value.lower() == 'true':
+      new_config[key] = True
+      continue
+    elif value.lower() == 'false':
+      new_config[key] = False
+      continue
 
-if 'kibana' in config_o['logging']:
-  if 'install' in config_o['logging']['kibana']:
-    if config_o['logging']['kibana']['install'].lower() in ("1", "true"):
-      config_o['logging']['kibana']['install'] = True
-    else:
-      config_o['logging']['kibana']['install'] = False
+  new_config[key] = value
 
 # Write the new configuration
 with open(co, 'w') as of:
-  yaml.safe_dump(config_o, of, explicit_start=True, default_flow_style = False)
+  yaml.safe_dump(new_config, of, explicit_start=True, default_flow_style = False)
